@@ -1,0 +1,23 @@
+# PR Review Workflow
+# Copy this file to your target repo: .github/workflows/pr-review.yml
+
+name: PR Review Bot
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  review:
+    runs-on: self-hosted
+    steps:
+      - name: Request PR Review
+        run: |
+          curl -sf -X POST "http://localhost:11435/api/review-pr" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "owner": "${{ github.repository_owner }}",
+              "repo": "${{ github.event.repository.name }}",
+              "pr_number": ${{ github.event.pull_request.number }},
+              "model": "qwen3-coder:30b"
+            }'
